@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  django-backend:
+    build: .
+    container_name: django-backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DB_NAME: "Pedidos"
+      DB_USER: "root"
+      DB_PASSWORD: "utec"
+      DB_HOST: "db"
+      DB_PORT: "3306"
+    depends_on:
+      - db
+    networks:
+      - microservicios
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_DATABASE: "Pedidos"
+      MYSQL_ROOT_PASSWORD: "utec"
+    ports:
+      - "3306:3306"
+    networks:
+      - microservicios
+
+  adminer:
+    image: adminer
+    container_name: adminer-pedidos
+    ports:
+      - 8080:8080
+    networks:
+      - microservicios
+
+networks:
+  microservicios:
+    external: true
