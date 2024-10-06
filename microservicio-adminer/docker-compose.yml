@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # Servicio para la aplicación Flask
+  web:
+    build: .
+    container_name: flask_app
+    ports:
+      - "5000:5000"
+    environment:
+      - SQLALCHEMY_DATABASE_URI=mysql+pymysql://root:utec@db:3306/administrador
+    depends_on:
+      - db
+
+  # Servicio para la base de datos MySQL
+  db:
+    image: mysql:5.7
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: utec
+      MYSQL_DATABASE: administrador
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  # Servicio para Adminer (interfaz web para administrar MySQL)
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
